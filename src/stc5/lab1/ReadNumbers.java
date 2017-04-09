@@ -8,7 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 class ReadNumbers implements Runnable {
-    static boolean keepExecution = true;
+    private static boolean keepExecution = true;
 
     Thread t;
     private String threadname;
@@ -54,6 +54,7 @@ class ReadNumbers implements Runnable {
     }
 
     public void run() {
+        System.out.println("В потоке " + t.getName());
         File file = new File(sourcePath);
         if (file.isFile()) {
             try(InputStream fis = new FileInputStream(sourcePath)) {

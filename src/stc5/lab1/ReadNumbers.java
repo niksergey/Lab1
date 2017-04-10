@@ -7,15 +7,15 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-class ReadNumbers implements Runnable {
+public class ReadNumbers implements Runnable {
     private static boolean keepExecution = true;
 
-    Thread t;
+    public Thread t;
     private String threadname;
     private String sourcePath;
     private SumContainer sumContainer;
 
-    ReadNumbers(String name, String sourcePath, SumContainer sumContainer) {
+    public ReadNumbers(String name, String sourcePath, SumContainer sumContainer) {
         this.sumContainer = sumContainer;
         threadname = name;
         t = new Thread(this, threadname);
@@ -50,7 +50,7 @@ class ReadNumbers implements Runnable {
             System.out.println("Ошибка при чтении файла:\n" +
                     sourcePath + "\nПрограмма остановлена");
         }
-
+        int $_dsd$ef = 0;
     }
 
     public void run() {

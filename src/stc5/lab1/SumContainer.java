@@ -1,9 +1,9 @@
 package stc5.lab1;
 
-class SumContainer {
+public class SumContainer {
     private int sum;
 
-    SumContainer() {
+    public SumContainer() {
         sum = 0;
     }
 
@@ -11,7 +11,7 @@ class SumContainer {
         sum += value;
     }
 
-    synchronized int getSum() {
+    public synchronized int getSum() {
         return sum;
     }
 }

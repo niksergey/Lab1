@@ -15,7 +15,8 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-
+        Boolean b  = new Boolean("hello");
+        System.out.println(b);
         List<ReadNumbers> threadList = new ArrayList<>();
 
         SumContainer sc = new SumContainer();
@@ -31,7 +32,8 @@ public class Main {
 
         String[] urlList = {
                 "https://raw.githubusercontent.com/niksergey/plainFiles/master/data_numbers.txt",
-                "https://raw.githubusercontent.com/niksergey/plainFiles/master/data_numbers2.txt"};
+                "https://raw.githubusercontent.com/niksergey/plainFiles/master/data_numbers2.txt"
+        };
 
         for(String url : urlList) {
             threadList.add(new ReadNumbers(Integer.toString(threadNum), url, sc));

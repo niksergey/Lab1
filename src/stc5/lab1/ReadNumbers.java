@@ -6,9 +6,11 @@ package stc5.lab1;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ReadNumbers implements Runnable {
-    private static boolean keepExecution = true;//volatile
+    private static volatile boolean keepExecution = true; //volatile
 
     public Thread t;
     private String threadname;
@@ -29,29 +31,42 @@ public class ReadNumbers implements Runnable {
             String line;
             String[] words;
             int numb;
-            int numLine = 0;
+            int numLine = 1;
+
             while((line = br.readLine()) != null && keepExecution) {
-                numLine++;
                 words = line.split(" ");
-                for (String word: words)
-                    try {
-                    //regexp
-                        numb = Integer.parseInt(word);
-                        if (numb > 0 && numb % 2 == 0) {
-                            sumContainer.sumValue(numb);
+                for (String word: words) {
+                    if (isPossibleWord(word)) {
+                        try {
+                            numb = Integer.parseInt(word);
+                            if (numb > 0 && numb % 2 == 0) {
+                                sumContainer.sumValue(numb);
+                            }
+                        } catch (NumberFormatException e) {
+                            keepExecution = false;
+                            System.out.println("Неверный regexp" + "\nПрограмма остановлена");
+                            break;
                         }
-                    } catch (NumberFormatException e) {
+                    } else {
                         keepExecution = false;
                         System.out.println("Неверный формат файла:\n Строка " +
                                 numLine + ", слово " + word + "\nПрограмма остановлена");
+                        break;
                     }
+                }
+                numLine++;
             }
         } catch (IOException e) {
             keepExecution = false;
             System.out.println("Ошибка при чтении файла:\n" +
                     sourcePath + "\nПрограмма остановлена");
         }
+    }
 
+    private boolean isPossibleWord(String word) {
+        Pattern pattern = Pattern.compile("-?\\d+");
+        Matcher matcher = pattern.matcher(word);
+        return matcher.matches();
     }
 
     public void run() {

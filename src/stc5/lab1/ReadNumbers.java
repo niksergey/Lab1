@@ -8,7 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ReadNumbers implements Runnable {
-    private static boolean keepExecution = true;
+    private static boolean keepExecution = true;//volatile
 
     public Thread t;
     private String threadname;
@@ -35,6 +35,7 @@ public class ReadNumbers implements Runnable {
                 words = line.split(" ");
                 for (String word: words)
                     try {
+                    //regexp
                         numb = Integer.parseInt(word);
                         if (numb > 0 && numb % 2 == 0) {
                             sumContainer.sumValue(numb);
@@ -50,13 +51,13 @@ public class ReadNumbers implements Runnable {
             System.out.println("Ошибка при чтении файла:\n" +
                     sourcePath + "\nПрограмма остановлена");
         }
-        int $_dsd$ef = 0;
+
     }
 
     public void run() {
         System.out.println("В потоке " + t.getName());
         File file = new File(sourcePath);
-        if (file.isFile()) {
+        if (file.isFile()) {//refactor
             try(InputStream fis = new FileInputStream(sourcePath)) {
                 readFile(fis);
             } catch (IOException e) {

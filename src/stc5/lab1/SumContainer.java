@@ -1,7 +1,7 @@
 package stc5.lab1;
 
 public class SumContainer {
-    private int sum;
+    private int sum;//volatile  or atomic
 
     public SumContainer() {
         sum = 0;

@@ -10,13 +10,12 @@ package stc5.lab1;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-        Boolean b  = new Boolean("hello");
-        System.out.println(b);
         List<ReadNumbers> threadList = new ArrayList<>();
 
         SumContainer sc = new SumContainer();
@@ -41,15 +40,15 @@ public class Main {
         }
 
         while (isSomeoneAlive(threadList)) {
-            System.out.println("Current sum: " + sc.getSum());
+            System.out.println("[" + new Date() + "] Текущая сумма: " + sc.getSum());
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        System.out.println("Sum after all threads " + sc.getSum());
+        System.out.println("Сумма после всех потоков " + sc.getSum());
 
         for(ReadNumbers rn : threadList) {
             try {

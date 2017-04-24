@@ -12,6 +12,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Main {
 
@@ -38,6 +39,10 @@ public class Main {
             threadList.add(new ReadNumbers(Integer.toString(threadNum), url, sc));
             threadNum++;
         }
+
+        Consumer<ReadNumbers> startThreads = (v) -> v.t.start();
+
+        threadList.parallelStream().forEach(startThreads);
 
         while (isSomeoneAlive(threadList)) {
             System.out.println("[" + new Date() + "] Текущая сумма: " + sc.getSum());

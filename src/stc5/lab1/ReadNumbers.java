@@ -6,11 +6,17 @@ package stc5.lab1;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReadNumbers implements Runnable {
-    private static volatile boolean keepExecution = true; //volatile
+    private static volatile boolean keepExecution = true;
 
     public Thread t;
     private String threadname;
@@ -22,39 +28,36 @@ public class ReadNumbers implements Runnable {
         threadname = name;
         t = new Thread(this, threadname);
         this.sourcePath = sourcePath;
-        t.start();
     }
 
     private void readFile(InputStream fis) {
         try (InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr)) {
             String line;
-            String[] words;
-            int numb;
-            int numLine = 1;
+            List<String> words;
 
             while((line = br.readLine()) != null && keepExecution) {
-                words = line.split(" ");
-                for (String word: words) {
-                    if (isPossibleWord(word)) {
-                        try {
-                            numb = Integer.parseInt(word);
-                            if (numb > 0 && numb % 2 == 0) {
-                                sumContainer.sumValue(numb);
-                            }
-                        } catch (NumberFormatException e) {
-                            keepExecution = false;
-                            System.out.println("Неверный regexp" + "\nПрограмма остановлена");
-                            break;
-                        }
-                    } else {
+                words = Arrays.asList(line.split(" "));
+
+                Predicate<String> possibleWord = (s) -> isPossibleWord(s);
+
+                Function<String, Integer> converter = (word) -> {
+                    Integer numb = null;
+                    try {
+                        numb = Integer.parseInt(word);
+
+                    } catch (NumberFormatException e) {
                         keepExecution = false;
-                        System.out.println("Неверный формат файла:\n Строка " +
-                                numLine + ", слово " + word + "\nПрограмма остановлена");
-                        break;
+                        System.out.println("Неверный regexp" + "\nПрограмма остановлена");
                     }
-                }
-                numLine++;
+                    return numb;
+                };
+
+                Consumer<Integer> sendFromThread = (v) -> sumContainer.sumValue(v);
+                Predicate<Integer> positive = (n) -> (n > 0 && n % 2 == 0);
+
+                words.parallelStream().filter(possibleWord)
+                        .map(converter).filter(positive).forEach(sendFromThread);
             }
         } catch (IOException e) {
             keepExecution = false;
